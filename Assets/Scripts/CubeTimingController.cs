@@ -7,12 +7,14 @@ public class CubeTimingController : MonoBehaviour {
     Rigidbody  rigidBody;
     bool       activated;
     bool       wasActivatedAtSomePoint = false;
-    int        timeSinceActivation = 0;
-    public int maxEnabledTime      = 300;
+    int        timeSinceActivation     = 0;
+    public int enabledTime             = 250;
+    int        additionalRandomEnabledTime;
 
 	// Use this for initialization
 	void Start () {
         rigidBody = GetComponent<Rigidbody>();
+        int additionalRandomEnabledTime = (int) (Random.value * 50);
 	}
 
 	// Update is called once per frame
@@ -20,7 +22,7 @@ public class CubeTimingController : MonoBehaviour {
         if (activated) {
             timeSinceActivation++;
         }
-        if (timeSinceActivation >= maxEnabledTime) {
+        if (timeSinceActivation >= enabledTime + additionalRandomEnabledTime) {
             DisableCube();
         }
 	}
@@ -36,13 +38,11 @@ public class CubeTimingController : MonoBehaviour {
 
     // will happen after some set amount of time from when the cube collides with the player
     void DisableCube() {
-        rigidBody.isKinematic      = true;
-        rigidBody.detectCollisions = false;
-        activated                  = false;
+        Destroy(this.gameObject);
     }
 
     void OnTriggerEnter(Collider otherObjectCollider) {
-        if (otherObjectCollider.gameObject.tag == "Player" && !wasActivatedAtSomePoint) {
+        if (otherObjectCollider.gameObject.tag == "PlayerBat" && !wasActivatedAtSomePoint) {
             EnableCube();
         }
     }

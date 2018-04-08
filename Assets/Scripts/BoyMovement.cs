@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor.Animations;
+// TODO testing
+//using UnityEditor.Animations;
 
 public class BoyMovement : MonoBehaviour {
 
@@ -28,7 +29,7 @@ public class BoyMovement : MonoBehaviour {
         hitForce.GetComponent<CapsuleCollider>().enabled = false;
         direction = Vector3.zero;
     }
-	
+
 
 	void Update () {
         vertical_speed = Input.GetAxisRaw("Vertical");
@@ -43,7 +44,7 @@ public class BoyMovement : MonoBehaviour {
             // The bat needs a different pos & rot relative to the parent hand when swinging, so below
             // we disconnet the fixed joint in order to change these, and then reattach the bat to the hand.
             handBatJoint.connectedBody = null;
-            bat.transform.localPosition = batSwingTrans; 
+            bat.transform.localPosition = batSwingTrans;
             Quaternion rotation = Quaternion.Euler(batSwingRot);
             bat.transform.localRotation = Quaternion.RotateTowards(bat.transform.localRotation, rotation,
                 1000 * Time.deltaTime); // This particular operation accounts for the animation transition
@@ -91,7 +92,7 @@ public class BoyMovement : MonoBehaviour {
             handBatJoint.connectedBody = batRigidbody;
             hitForce.GetComponent<CapsuleCollider>().enabled = false;
         }
-        
+
     }
 }
 
