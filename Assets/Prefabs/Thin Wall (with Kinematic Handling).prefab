@@ -738,7 +738,7 @@ GameObject:
   - component: {fileID: 4247697573156534}
   - component: {fileID: 114093875450198002}
   m_Layer: 0
-  m_Name: Thin Wall
+  m_Name: Thin Wall (with Kinematic Handling)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
