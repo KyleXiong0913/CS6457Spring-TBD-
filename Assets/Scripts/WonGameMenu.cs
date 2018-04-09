@@ -30,6 +30,9 @@ public class WonGameMenu : MonoBehaviour {
             reloadLevelText.SetActive(false);
             mainMenuText.SetActive(false);
 
+            // disable the AI so that we don't lose after we win
+            Destroy(GameObject.Find("claire"));
+
             if ((Input.GetAxisRaw("Vertical") >= 0.8) || (Input.GetAxisRaw("Vertical") <= -0.8)
             || (Input.GetAxisRaw("Mouse Y") * 10 >= 0.8) || (Input.GetAxisRaw("Mouse Y") * 10 <= -0.8))
             {

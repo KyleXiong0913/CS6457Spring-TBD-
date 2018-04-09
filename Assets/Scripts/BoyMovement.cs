@@ -75,7 +75,7 @@ public class BoyMovement : MonoBehaviour {
                 // Turns the character in place if there is no forward movement.
                 animator.SetBool("turningInPlace", true);
                 animator.SetFloat("h_speed", horizontal_speed * 10);
-                Debug.Log(horizontal_speed);
+                //Debug.Log(horizontal_speed); // commenting this out so i can see other debug output
             }
             else
             {
