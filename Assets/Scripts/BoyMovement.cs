@@ -11,6 +11,8 @@ public class BoyMovement : MonoBehaviour {
     public FixedJoint handBatJoint; // fixed joint from right hand to bat
     public Rigidbody batRigidbody;
 
+    //private static GameState gameState = new GameState();
+
     private Animator animator; // player animator controller
 
     private Vector3 direction; // used for player rotation
@@ -32,67 +34,77 @@ public class BoyMovement : MonoBehaviour {
 
 
 	void Update () {
-        vertical_speed = Input.GetAxisRaw("Vertical");
-        horizontal_speed = Input.GetAxisRaw("Mouse X"); // corresponds to right joystick X-axis on controller
-
-        animator.SetFloat("v_speed", vertical_speed); // send forward movement to AC
-
-        if (Input.GetKeyDown("joystick 1 button 0")) // if A button pressed, perform a swing
+        if (GameState.GamePaused() || GameState.GameWon() || GameState.GameLost())
         {
-            animator.SetTrigger("swing");
-
-            // The bat needs a different pos & rot relative to the parent hand when swinging, so below
-            // we disconnet the fixed joint in order to change these, and then reattach the bat to the hand.
-            handBatJoint.connectedBody = null;
-            bat.transform.localPosition = batSwingTrans;
-            Quaternion rotation = Quaternion.Euler(batSwingRot);
-            bat.transform.localRotation = Quaternion.RotateTowards(bat.transform.localRotation, rotation,
-                1000 * Time.deltaTime); // This particular operation accounts for the animation transition
-            handBatJoint.connectedBody = batRigidbody;
-        }
-
-        if ((horizontal_speed >= 0.05 || horizontal_speed <= -0.05) && (vertical_speed >= 0.1 || vertical_speed <= -0.1))
-        {
-            // Turns the character based on right stick. Doesn't affect animations,
-            // but does affect the camera since it follows the player.
+            animator.SetFloat("v_speed", 0);
+            animator.SetFloat("h_speed", 0);
             animator.SetBool("turningInPlace", false);
-            direction = new Vector3(horizontal_speed, 0, 0);
-            direction = transform.TransformDirection(direction);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction),
-                rotateDegreesPerSecond * Time.deltaTime);
-        } else if ((horizontal_speed >= 0.05 || horizontal_speed <= -0.05) && (vertical_speed <= 0.1 || vertical_speed >= -0.1))
-        {
-            // Turns the character in place if there is no forward movement.
-            animator.SetBool("turningInPlace", true);
-            animator.SetFloat("h_speed", horizontal_speed*10);
-            Debug.Log(horizontal_speed);
         } else
         {
-            animator.SetBool("turningInPlace", false);
-        }
+            vertical_speed = Input.GetAxisRaw("Vertical");
+            horizontal_speed = Input.GetAxisRaw("Mouse X"); // corresponds to right joystick X-axis on controller
 
-        if (animator.GetCurrentAnimatorStateInfo(1).IsName("Swing"))
-        {
-            // The bat needs a different pos & rot relative to the parent hand when swinging, so below
-            // we disconnet the fixed joint in order to change these, and then reattach the bat to the hand.
-            handBatJoint.connectedBody = null;
-            bat.transform.localPosition = batSwingTrans;
-            Quaternion rotation = Quaternion.Euler(batSwingRot);
-            bat.transform.localRotation = rotation;
-            handBatJoint.connectedBody = batRigidbody;
-            hitForce.GetComponent<CapsuleCollider>().enabled = true;
-        } else
-        {
-            // The bat needs a different pos & rot relative to the parent hand when swinging, so below
-            // we disconnet the fixed joint in order to change these, and then reattach the bat to the hand.
-            handBatJoint.connectedBody = null;
-            bat.transform.localPosition = batIdleTrans;
-            Quaternion rotation = Quaternion.Euler(batIdleRot);
-            bat.transform.localRotation = rotation;
-            handBatJoint.connectedBody = batRigidbody;
-            hitForce.GetComponent<CapsuleCollider>().enabled = false;
-        }
+            animator.SetFloat("v_speed", vertical_speed); // send forward movement to AC
 
+            if (Input.GetKeyDown("joystick 1 button 0")) // if A button pressed, perform a swing
+            {
+                animator.SetTrigger("swing");
+
+                // The bat needs a different pos & rot relative to the parent hand when swinging, so below
+                // we disconnet the fixed joint in order to change these, and then reattach the bat to the hand.
+                handBatJoint.connectedBody = null;
+                bat.transform.localPosition = batSwingTrans;
+                Quaternion rotation = Quaternion.Euler(batSwingRot);
+                bat.transform.localRotation = Quaternion.RotateTowards(bat.transform.localRotation, rotation,
+                    1000 * Time.deltaTime); // This particular operation accounts for the animation transition
+                handBatJoint.connectedBody = batRigidbody;
+            }
+
+            if ((horizontal_speed >= 0.05 || horizontal_speed <= -0.05) && (vertical_speed >= 0.1 || vertical_speed <= -0.1))
+            {
+                // Turns the character based on right stick. Doesn't affect animations,
+                // but does affect the camera since it follows the player.
+                animator.SetBool("turningInPlace", false);
+                direction = new Vector3(horizontal_speed, 0, 0);
+                direction = transform.TransformDirection(direction);
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction),
+                    rotateDegreesPerSecond * Time.deltaTime);
+            }
+            else if ((horizontal_speed >= 0.05 || horizontal_speed <= -0.05) && (vertical_speed <= 0.1 || vertical_speed >= -0.1))
+            {
+                // Turns the character in place if there is no forward movement.
+                animator.SetBool("turningInPlace", true);
+                animator.SetFloat("h_speed", horizontal_speed * 10);
+                Debug.Log(horizontal_speed);
+            }
+            else
+            {
+                animator.SetBool("turningInPlace", false);
+            }
+
+            if (animator.GetCurrentAnimatorStateInfo(1).IsName("Swing"))
+            {
+                // The bat needs a different pos & rot relative to the parent hand when swinging, so below
+                // we disconnet the fixed joint in order to change these, and then reattach the bat to the hand.
+                handBatJoint.connectedBody = null;
+                bat.transform.localPosition = batSwingTrans;
+                Quaternion rotation = Quaternion.Euler(batSwingRot);
+                bat.transform.localRotation = rotation;
+                handBatJoint.connectedBody = batRigidbody;
+                hitForce.GetComponent<CapsuleCollider>().enabled = true;
+            }
+            else
+            {
+                // The bat needs a different pos & rot relative to the parent hand when swinging, so below
+                // we disconnet the fixed joint in order to change these, and then reattach the bat to the hand.
+                handBatJoint.connectedBody = null;
+                bat.transform.localPosition = batIdleTrans;
+                Quaternion rotation = Quaternion.Euler(batIdleRot);
+                bat.transform.localRotation = rotation;
+                handBatJoint.connectedBody = batRigidbody;
+                hitForce.GetComponent<CapsuleCollider>().enabled = false;
+            }
+        }
     }
 }
 

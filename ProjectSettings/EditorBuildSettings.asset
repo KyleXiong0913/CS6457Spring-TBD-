@@ -6,5 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/destrucible_crate_prototype.unity
+    path: Assets/Scenes/Main Menu.unity
+    guid: 2a8ace472949af64db6bb6a7e5188a73
+  - enabled: 1
+    path: Assets/Scenes/destructible_crate_prototype.unity
     guid: aa3046498ae283f4f8b78d9eec57c684

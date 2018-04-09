@@ -14,7 +14,7 @@ public class CubeTimingController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         rigidBody = GetComponent<Rigidbody>();
-        int additionalRandomEnabledTime = (int) (Random.value * 50);
+        additionalRandomEnabledTime = (int) (Random.value * 50);
 	}
 
 	// Update is called once per frame
