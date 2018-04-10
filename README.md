@@ -4,3 +4,5 @@
 # -Ryan Voor
 # -Alex
 # -Feng
+
+Instructions for gameplay as of the time of the alpha: use an xbox controller. Move forwards and backwards with left stick. Move camera with right stick. Press A to swing the bat.
