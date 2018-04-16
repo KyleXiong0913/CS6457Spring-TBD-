@@ -2,13 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameState {
+public class GameState : MonoBehaviour{
 
     private static bool pause = false;
     private static bool foundAllCollectibles = false;
-    private static int numCollectibles = CountCollectibles();
+    private static int numCollectibles;
+    //private static int numCollectibles = CountCollectibles();
     private static int foundCollectibles = 0;
     private static bool lostGame = false;
+
+    public void Start()
+    {
+        numCollectibles = GameObject.Find("Collectibles").gameObject.GetComponent<Transform>().childCount;
+
+    }
 
     public static void PauseGame()
     {
@@ -64,16 +71,22 @@ public class GameState {
         lostGame = true;
     }
 
-    private static int CountCollectibles()
+    /*private static int CountCollectibles()
     {
         return GameObject.Find("Collectibles").gameObject.GetComponent<Transform>().childCount;
+    }*/
+
+    //This is the method that is used to calculate the number of blocks been destroyed.
+    private static int CountDestroyedBlocks()
+    {
+        return 0;
     }
 	
     public static void ResetGameState()
     {
         pause = false;
         foundAllCollectibles = false;
-        numCollectibles = CountCollectibles();
+        //numCollectibles = CountCollectibles();
         foundCollectibles = 0;
         lostGame = false;
     }

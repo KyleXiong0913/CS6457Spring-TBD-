@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-
 [RequireComponent (typeof (NavMeshAgent))]
 [RequireComponent (typeof (Animator))]
+
 public class HumanoidFollow : MonoBehaviour {
 
     private Animator animator;
