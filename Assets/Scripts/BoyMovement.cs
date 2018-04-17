@@ -46,7 +46,7 @@ public class BoyMovement : MonoBehaviour {
 
             animator.SetFloat("v_speed", vertical_speed); // send forward movement to AC
 
-            if (Input.GetKeyDown("joystick 1 button 0")) // if A button pressed, perform a swing
+            if (Input.GetKeyDown("joystick 1 button 1")) // if A button pressed, perform a swing
             {
                 animator.SetTrigger("swing");
 
@@ -58,6 +58,12 @@ public class BoyMovement : MonoBehaviour {
                 bat.transform.localRotation = Quaternion.RotateTowards(bat.transform.localRotation, rotation,
                     1000 * Time.deltaTime); // This particular operation accounts for the animation transition
                 handBatJoint.connectedBody = batRigidbody;
+            } else if (Input.GetKeyDown("joystick 1 button 3") && !animator.GetCurrentAnimatorStateInfo(1).IsName("Swing"))
+            {
+                animator.SetTrigger("smash");
+            } else if (Input.GetKeyDown("joystick 1 button 0") && !animator.GetCurrentAnimatorStateInfo(1).IsName("Smash"))
+            {
+                animator.SetTrigger("jump");
             }
 
             if ((horizontal_speed >= 0.05 || horizontal_speed <= -0.05) && (vertical_speed >= 0.1 || vertical_speed <= -0.1))
