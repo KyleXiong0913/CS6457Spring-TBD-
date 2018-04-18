@@ -41,12 +41,19 @@ public class BoyMovement : MonoBehaviour {
             animator.SetBool("turningInPlace", false);
         } else
         {
-            vertical_speed = Input.GetAxisRaw("Vertical");
-            horizontal_speed = Input.GetAxisRaw("Mouse X"); // corresponds to right joystick X-axis on controller
+            vertical_speed = Input.GetAxisRaw(GameState.verticalAxis);
+            if (vertical_speed <= 0.05 && vertical_speed >= -0.05) {
+                vertical_speed = Input.GetAxisRaw(GameState.verticalKey);
+            }
+            horizontal_speed = Input.GetAxisRaw(GameState.cameraHAxis); // corresponds to right joystick X-axis on controller
+            if (horizontal_speed <= 0.05 && horizontal_speed >= -0.05)
+            {
+                horizontal_speed = Input.GetAxisRaw(GameState.cameraHKey);
+            }
 
             animator.SetFloat("v_speed", vertical_speed); // send forward movement to AC
 
-            if (Input.GetKeyDown("joystick 1 button 0")) // if A button pressed, perform a swing
+            if (Input.GetKeyDown(GameState.buttonA) || Input.GetKeyDown(GameState.swingKey)) // if A button pressed, perform a swing
             {
                 animator.SetTrigger("swing");
 
