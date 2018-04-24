@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+//This is the test GameState script.
 public class GameState {
 
     // Joystick Buttons & Axes
@@ -35,12 +35,15 @@ public class GameState {
     private static bool pause = false;
     private static bool foundAllCollectibles = false;
     private static int numCollectibles = CountCollectibles();
+    //This is the variable that is used to store the foundCollectibles variable as primarily int type.
     private static int foundCollectibles = 0;
     private static bool lostGame = false;
+    public static int blocksDestroyed = 0;
 
     public static void PauseGame()
     {
         pause = true;
+        //Audios.
     }
 
     public static void UnpauseGame()

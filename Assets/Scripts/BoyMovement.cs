@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class BoyMovement : MonoBehaviour {
 
+    public AudioSource audios;
+    public AudioClip clip;
+
     public GameObject bat;
     public GameObject hitForce; // collider that adds extra force after swing
     public FixedJoint handBatJoint; // fixed joint from right hand to bat
@@ -30,6 +33,8 @@ public class BoyMovement : MonoBehaviour {
         animator = GetComponent<Animator>();
         hitForce.GetComponent<CapsuleCollider>().enabled = false;
         direction = Vector3.zero;
+        //Initialize the AudioSource
+        audios = GetComponent<AudioSource>();
     }
 
 
@@ -65,6 +70,9 @@ public class BoyMovement : MonoBehaviour {
                 bat.transform.localRotation = Quaternion.RotateTowards(bat.transform.localRotation, rotation,
                     1000 * Time.deltaTime); // This particular operation accounts for the animation transition
                 handBatJoint.connectedBody = batRigidbody;
+                //Play the sound effect of the hit performance.
+                audios.Play();
+                Debug.Log("PLAY MUSIC");
             }
 
             if ((horizontal_speed >= 0.05 || horizontal_speed <= -0.05) && (vertical_speed >= 0.1 || vertical_speed <= -0.1))
