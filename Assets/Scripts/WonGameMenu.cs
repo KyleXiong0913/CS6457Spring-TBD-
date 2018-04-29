@@ -9,8 +9,6 @@ public class WonGameMenu : MonoBehaviour {
     public GameObject reloadLevelText;
     public GameObject mainMenuText;
     public GameObject buttonSelector;
-    //private string pauseButton = "Menu";
-    private string selectButton = "joystick 1 button 0";
     private float selectorMoveDistance = 40.0f;
     private bool wasUp = false;
 
@@ -33,8 +31,10 @@ public class WonGameMenu : MonoBehaviour {
             // disable the AI so that we don't lose after we win
             Destroy(GameObject.Find("claire"));
 
-            if ((Input.GetAxisRaw("Vertical") >= 0.8) || (Input.GetAxisRaw("Vertical") <= -0.8)
-            || (Input.GetAxisRaw("Mouse Y") * 10 >= 0.8) || (Input.GetAxisRaw("Mouse Y") * 10 <= -0.8))
+            if ((Input.GetAxisRaw(GameState.verticalAxis) >= 0.8) || (Input.GetAxisRaw(GameState.verticalAxis) <= -0.8)
+            || (Input.GetAxisRaw(GameState.verticalKey) >= 0.8) || (Input.GetAxisRaw(GameState.verticalKey) <= -0.8)
+            || (Input.GetAxisRaw(GameState.cameraVAxis) * 10 >= 0.8) || (Input.GetAxisRaw(GameState.cameraVAxis) * 10 <= -0.8)
+            || (Input.GetAxisRaw(GameState.cameraVKey) * 10 >= 0.8) || (Input.GetAxisRaw(GameState.cameraVKey) * 10 <= -0.8))
             {
                 if (buttonSelector.transform.localPosition.y == 0 && !wasUp)
                 {
@@ -53,7 +53,7 @@ public class WonGameMenu : MonoBehaviour {
                 wasUp = false;
             }
 
-            if (Input.GetKeyDown(selectButton))
+            if ((Input.GetKeyDown(GameState.buttonA) || Input.GetKeyDown(GameState.returnKey)))
             {
                 // Check height of selector
                 if (buttonSelector.transform.localPosition.y == 0)

@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class BoyMovement : MonoBehaviour {
 
+    public AudioSource audios;
+    public AudioClip clip;
+
     public GameObject bat;
     public GameObject hitForce; // collider that adds extra force after swing
     public FixedJoint handBatJoint; // fixed joint from right hand to bat
@@ -30,6 +33,8 @@ public class BoyMovement : MonoBehaviour {
         animator = GetComponent<Animator>();
         hitForce.GetComponent<CapsuleCollider>().enabled = false;
         direction = Vector3.zero;
+        //Initialize the AudioSource
+        audios = GetComponent<AudioSource>();
     }
 
 
@@ -41,12 +46,19 @@ public class BoyMovement : MonoBehaviour {
             animator.SetBool("turningInPlace", false);
         } else
         {
-            vertical_speed = Input.GetAxisRaw("Vertical");
-            horizontal_speed = Input.GetAxisRaw("Mouse X"); // corresponds to right joystick X-axis on controller
+            vertical_speed = Input.GetAxisRaw(GameState.verticalAxis);
+            if (vertical_speed <= 0.05 && vertical_speed >= -0.05) {
+                vertical_speed = Input.GetAxisRaw(GameState.verticalKey);
+            }
+            horizontal_speed = Input.GetAxisRaw(GameState.cameraHAxis); // corresponds to right joystick X-axis on controller
+            if (horizontal_speed <= 0.05 && horizontal_speed >= -0.05)
+            {
+                horizontal_speed = Input.GetAxisRaw(GameState.cameraHKey);
+            }
 
             animator.SetFloat("v_speed", vertical_speed); // send forward movement to AC
 
-            if (Input.GetKeyDown("joystick 1 button 0")) // if A button pressed, perform a swing
+            if (Input.GetKeyDown(GameState.buttonA) || Input.GetKeyDown(GameState.swingKey)) // if A button pressed, perform a swing
             {
                 animator.SetTrigger("swing");
 
@@ -58,6 +70,9 @@ public class BoyMovement : MonoBehaviour {
                 bat.transform.localRotation = Quaternion.RotateTowards(bat.transform.localRotation, rotation,
                     1000 * Time.deltaTime); // This particular operation accounts for the animation transition
                 handBatJoint.connectedBody = batRigidbody;
+                //Play the sound effect of the hit performance.
+                audios.Play();
+                Debug.Log("PLAY MUSIC");
             }
 
             if ((horizontal_speed >= 0.05 || horizontal_speed <= -0.05) && (vertical_speed >= 0.1 || vertical_speed <= -0.1))
