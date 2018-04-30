@@ -34,7 +34,7 @@ public class GameState {
 
     private static bool pause = false;
     private static bool foundAllCollectibles = false;
-    private static int numCollectibles = CountCollectibles();
+    private static int numCollectibles; //= CountCollectibles();
     //This is the variable that is used to store the foundCollectibles variable as primarily int type.
     private static int foundCollectibles = 0;
     private static bool lostGame = false;
