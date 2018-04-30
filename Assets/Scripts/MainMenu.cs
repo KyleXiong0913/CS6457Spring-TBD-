@@ -7,9 +7,6 @@ public class MainMenu : MonoBehaviour {
 
     public GameObject mainMenu;
     public GameObject buttonSelector;
-    //private string pauseButton = "Menu";
-    //private string selectButton = "joystick 1 button 0";
-    private string selectButton = "enter";
     private float selectorMoveDistance = 80.0f;
     private float selectorStart = -20.0f;
     private bool wasUp = false;
@@ -23,13 +20,10 @@ public class MainMenu : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            Debug.Log("Pressed primary button.");
-        }
-
-        if ((Input.GetAxisRaw("Vertical") >= 0.8) || (Input.GetAxisRaw("Vertical") <= -0.8)
-            || (Input.GetAxisRaw("Mouse Y") * 10 >= 0.8) || (Input.GetAxisRaw("Mouse Y") * 10 <= -0.8))
+        if ((Input.GetAxisRaw(GameState.verticalAxis) >= 0.8) || (Input.GetAxisRaw(GameState.verticalAxis) <= -0.8)
+            || (Input.GetAxisRaw(GameState.verticalKey) >= 0.8) || (Input.GetAxisRaw(GameState.verticalKey) <= -0.8)
+            || (Input.GetAxisRaw(GameState.cameraVAxis) * 10 >= 0.8) || (Input.GetAxisRaw(GameState.cameraVAxis) * 10 <= -0.8)
+            || (Input.GetAxisRaw(GameState.cameraVKey) * 10 >= 0.8) || (Input.GetAxisRaw(GameState.cameraVKey) * 10 <= -0.8))
         {
             if (buttonSelector.transform.localPosition.y == selectorStart && !wasUp)
             {
@@ -48,8 +42,7 @@ public class MainMenu : MonoBehaviour {
             wasUp = false;
         }
 
-        //if (Input.GetKeyDown(selectButton))
-        if (Input.GetKeyDown("enter"))
+        if (Input.GetKeyDown(GameState.buttonA) || Input.GetKeyDown(GameState.returnKey))
         {
             if (buttonSelector.transform.localPosition.y == selectorStart)
             {

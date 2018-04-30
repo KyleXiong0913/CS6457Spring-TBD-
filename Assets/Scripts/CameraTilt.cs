@@ -20,9 +20,14 @@ public class CameraTilt : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (!GameState.GamePaused() && !GameState.GameWon())
+		
+        if (!GameState.GamePaused() && !GameState.GameWon() && !GameState.GameLost())
         {
-            float tiltValue = Input.GetAxisRaw("Mouse Y");
+            float tiltValue = Input.GetAxisRaw(GameState.cameraVAxis); 
+            if (tiltValue <= 0.05 && tiltValue >= -0.05)
+            {
+                tiltValue = Input.GetAxisRaw(GameState.cameraVKey)/3.0f;
+            }
             // add height & rotate x direction
             if (tiltValue >= 0.05 || tiltValue <= -0.05)
             {

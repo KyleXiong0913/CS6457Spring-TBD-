@@ -27,29 +27,38 @@ public class HumanoidFollow : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-        if (waitingAtStart)
-        {
-            timeSpentWaiting++;
-            if (timeSpentWaiting >= timeToWaitAtStart)
-            {
-                animator.SetBool("move", true);
-                agent.destination = player.transform.position;
-                waitingAtStart = false;
-            }
-        }
-
-        if ((transform.position - player.transform.position).magnitude <= catchDistance)
+        if (GameState.GamePaused())
         {
             animator.SetBool("move", false);
             agent.destination = transform.position;
-            // TODO testing
-            Debug.Log("GOT HERE");
-            GameState.LoseGame();
-        } else if (animator.GetBool("move"))
-        {
-            agent.destination = player.transform.position;
-            animator.SetFloat("v_speed", agent.desiredVelocity.magnitude);
         }
+        else
+        {
+            if (waitingAtStart)
+            {
+                timeSpentWaiting++;
+                if (timeSpentWaiting >= timeToWaitAtStart)
+                {
+                    animator.SetBool("move", true);
+                    agent.destination = player.transform.position;
+                    waitingAtStart = false;
+                }
+            }
+
+            if ((transform.position - player.transform.position).magnitude <= catchDistance)
+            {
+                animator.SetBool("move", false);
+                agent.destination = transform.position;
+                // TODO testing
+                Debug.Log("GOT HERE");
+                GameState.LoseGame();
+            }
+            else if (animator.GetBool("move"))
+            {
+                agent.destination = player.transform.position;
+                animator.SetFloat("v_speed", agent.desiredVelocity.magnitude);
+            }
+        }   
 	}
 
     private void OnAnimatorMove()

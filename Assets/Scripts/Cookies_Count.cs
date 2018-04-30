@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Cookies_Count : MonoBehaviour {
-
+public class Cookies_Count : MonoBehaviour
+{
     public static int Count;
     Text text;
 
@@ -18,6 +18,6 @@ public class Cookies_Count : MonoBehaviour {
     void Update()
     {
         text = GetComponent<Text>();
-        text.text = "Cookies Left: " + GameObject.Find("Collectibles").gameObject.GetComponent<Transform>().childCount;
+        text.text = "Cookies Left: " + (GameObject.Find("Collectibles").gameObject.GetComponent<Transform>().childCount - GameState.CollectiblesFound());
     }
 }

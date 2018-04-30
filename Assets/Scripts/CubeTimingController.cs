@@ -34,6 +34,8 @@ public class CubeTimingController : MonoBehaviour {
         rigidBody.detectCollisions = true;
         activated                  = true;
         wasActivatedAtSomePoint    = true;
+        //So we add the statement that is used to count how many blocks destroyed here.
+        GameState.blocksDestroyed = GameState.blocksDestroyed + 1;
     }
 
     // will happen after some set amount of time from when the cube collides with the player
