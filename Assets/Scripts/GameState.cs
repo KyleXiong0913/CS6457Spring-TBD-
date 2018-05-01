@@ -32,6 +32,11 @@ public class GameState {
     public const string jumpKey = "space";
     public const string smashKey = "r";
 
+    // Level Names
+    public const string speedLevel = "Speed Level";
+    public const string mazeLevel = "Maze Level";
+    public const string mainMenu = "Main Menu";
+
     private static bool pause = false;
     private static bool foundAllCollectibles = false;
     private static int numCollectibles; //= CountCollectibles();
@@ -40,10 +45,27 @@ public class GameState {
     private static bool lostGame = false;
     public static int blocksDestroyed = 0;
 
+    private static string currentLevel = speedLevel;
+
     public void Start()
     {
         numCollectibles = GameObject.Find("Collectibles").gameObject.GetComponent<Transform>().childCount;
 
+    }
+
+    public static void SetCurrentLevel(string levelName)
+    {
+        currentLevel = levelName;
+    }
+
+    public static string GetFirstLevel()
+    {
+        return speedLevel;
+    }
+
+    public static string GetCurrentLevel()
+    {
+        return currentLevel;
     }
 
     public static void PauseGame()
@@ -60,7 +82,7 @@ public class GameState {
     public static void FoundCollectible()
     {
         foundCollectibles = foundCollectibles + 1;
-        if (foundCollectibles == numCollectibles)
+        if (foundCollectibles >= numCollectibles)
         {
             foundAllCollectibles = true;
         }
@@ -73,6 +95,10 @@ public class GameState {
 
     public static int CollectiblesLeft()
     {
+        if (numCollectibles <= foundCollectibles)
+        {
+            return 0;
+        }
         return numCollectibles - foundCollectibles;
     }
 
@@ -101,11 +127,6 @@ public class GameState {
         lostGame = true;
     }
 
-    /*private static int CountCollectibles()
-    {
-        return GameObject.Find("Collectibles").gameObject.GetComponent<Transform>().childCount;
-    }*/
-
     //This is the method that is used to calculate the number of blocks been destroyed.
     private static int CountDestroyedBlocks()
     {
@@ -116,8 +137,8 @@ public class GameState {
     {
         pause = false;
         foundAllCollectibles = false;
-        //numCollectibles = CountCollectibles();
         foundCollectibles = 0;
+        blocksDestroyed = 0;
         lostGame = false;
     }
 }

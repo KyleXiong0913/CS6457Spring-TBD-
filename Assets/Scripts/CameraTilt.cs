@@ -68,19 +68,23 @@ public class CameraTilt : MonoBehaviour {
 
             RaycastHit hit;
             Vector3 newPos = firstPos;
+            int layerMask = 1;
 
-            while (Physics.Raycast(newPos, transform.forward, out hit, maxFollowDistance + 2))
+            while (Physics.Raycast(newPos, transform.forward, out hit, maxFollowDistance, layerMask) && maxFollowDistance >= 0.1f)
             {
-                if (!hit.collider.CompareTag("Player") && maxFollowDistance > 0)
-                {
-                    maxFollowDistance -= 0.1f;
-                } else
-                {
-                    break;
-                }
-                newPos = playerPos - (playerTransform.forward * maxFollowDistance);
+                //if (!hit.collider.CompareTag("Player") && maxFollowDistance > 0.0f)
+                //{
+                    
+                //} else
+                //{
+                 //   break;
+                //}
+                maxFollowDistance -= 0.1f;
+                newPos = playerPos - (playerTransform.forward * (maxFollowDistance));
                 newPos.y += height;
             }
+            newPos = playerPos - (playerTransform.forward * (maxFollowDistance - 0.5f));
+            newPos.y += height;
 
             GetComponent<Transform>().position = Vector3.Lerp(firstPos, newPos, smoothing * Time.deltaTime);
 

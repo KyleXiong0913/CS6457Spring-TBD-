@@ -6,42 +6,45 @@ using UnityEngine.SceneManagement;
 public class LostGameMenu : MonoBehaviour {
 
     public GameObject lostGameMenu;
-    public GameObject reloadLevelText;
-    public GameObject mainMenuText;
+    public GameObject LoadingMainMenu;
+    public GameObject LoadingLevel;
     public GameObject buttonSelector;
-    private float selectorMoveDistance = 40.0f;
+    private float selectorMoveDistance = 31.25f;
+    private float selectorBottom = -40.25f;
+    private float selectorStart = -9.0f;
     private bool wasUp = false;
 
     // Use this for initialization
     void Start()
     {
         lostGameMenu.gameObject.SetActive(false);
+        LoadingLevel.SetActive(false);
+        LoadingMainMenu.SetActive(false);
+        selectorStart = buttonSelector.transform.localPosition.y;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (GameState.GameLost())
+        if (GameState.GameLost() && !GameState.GameWon() && !GameState.GamePaused())
         {
             lostGameMenu = GetComponent<Transform>().GetChild(2).gameObject;
             lostGameMenu.gameObject.SetActive(true);
-            reloadLevelText.SetActive(false);
-            mainMenuText.SetActive(false);
 
             if ((Input.GetAxisRaw(GameState.verticalAxis) >= 0.8) || (Input.GetAxisRaw(GameState.verticalAxis) <= -0.8)
             || (Input.GetAxisRaw(GameState.verticalKey) >= 0.8) || (Input.GetAxisRaw(GameState.verticalKey) <= -0.8)
             || (Input.GetAxisRaw(GameState.cameraVAxis) * 10 >= 0.8) || (Input.GetAxisRaw(GameState.cameraVAxis) * 10 <= -0.8)
             || (Input.GetAxisRaw(GameState.cameraVKey) * 10 >= 0.8) || (Input.GetAxisRaw(GameState.cameraVKey) * 10 <= -0.8))
             {
-                if (buttonSelector.transform.localPosition.y == 0 && !wasUp)
+                if (buttonSelector.transform.localPosition.y > selectorBottom + 2 && !wasUp)
                 {
                     buttonSelector.transform.localPosition = new Vector3(buttonSelector.transform.localPosition.x,
-                        -selectorMoveDistance, buttonSelector.transform.localPosition.z);
+                        buttonSelector.transform.localPosition.y - selectorMoveDistance, buttonSelector.transform.localPosition.z);
                 }
-                else if (buttonSelector.transform.localPosition.y == -selectorMoveDistance && !wasUp)
+                else if (buttonSelector.transform.localPosition.y < selectorStart - 2 && !wasUp)
                 {
                     buttonSelector.transform.localPosition = new Vector3(buttonSelector.transform.localPosition.x,
-                        0.0f, buttonSelector.transform.localPosition.z);
+                        buttonSelector.transform.localPosition.y + selectorMoveDistance, buttonSelector.transform.localPosition.z);
                 }
                 wasUp = true;
             }
@@ -53,7 +56,7 @@ public class LostGameMenu : MonoBehaviour {
             if ((Input.GetKeyDown(GameState.buttonA) || Input.GetKeyDown(GameState.returnKey)))
             {
                 // Check height of selector
-                if (buttonSelector.transform.localPosition.y == 0)
+                if (buttonSelector.transform.localPosition.y == selectorStart)
                 {
                     RetryGame();
                 }
@@ -67,18 +70,18 @@ public class LostGameMenu : MonoBehaviour {
 
     void RetryGame()
     {
-        reloadLevelText = lostGameMenu.GetComponent<Transform>().GetChild(0).gameObject;
-        reloadLevelText.SetActive(true);
+        LoadingLevel = GetComponent<Transform>().GetChild(7).gameObject;
+        LoadingLevel.SetActive(true);
         GameState.ResetGameState();
-        SceneManager.LoadScene("destructible_crate_prototype");
+        SceneManager.LoadScene(GameState.GetCurrentLevel());
     }
 
     void MainMenu()
     {
-        mainMenuText = lostGameMenu.GetComponent<Transform>().GetChild(1).gameObject;
-        mainMenuText.SetActive(true);
+        LoadingMainMenu = GetComponent<Transform>().GetChild(6).gameObject;
+        LoadingMainMenu.SetActive(true);
         GameState.ResetGameState();
-        SceneManager.LoadScene("Main Menu");
+        SceneManager.LoadScene(GameState.mainMenu);
     }
 
 }

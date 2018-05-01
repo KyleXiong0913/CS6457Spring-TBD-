@@ -6,16 +6,21 @@ using UnityEngine.SceneManagement;
 public class WonGameMenu : MonoBehaviour {
 
     public GameObject wonGameMenu;
-    public GameObject reloadLevelText;
-    public GameObject mainMenuText;
+    public GameObject LoadingMainMenu;
+    public GameObject LoadingLevel;
     public GameObject buttonSelector;
-    private float selectorMoveDistance = 40.0f;
+    private float selectorMoveDistance = 31.25f;
+    private float selectorBottom = -40.25f;
+    private float selectorStart = -9.0f;
     private bool wasUp = false;
 
     // Use this for initialization
     void Start()
     {
         wonGameMenu.gameObject.SetActive(false);
+        LoadingLevel.SetActive(false);
+        LoadingMainMenu.SetActive(false);
+        selectorStart = buttonSelector.transform.localPosition.y;
     }
 
     // Update is called once per frame
@@ -25,8 +30,6 @@ public class WonGameMenu : MonoBehaviour {
         {
             wonGameMenu = GetComponent<Transform>().GetChild(1).gameObject;
             wonGameMenu.gameObject.SetActive(true);
-            reloadLevelText.SetActive(false);
-            mainMenuText.SetActive(false);
 
             // disable the AI so that we don't lose after we win
             Destroy(GameObject.Find("claire"));
@@ -36,15 +39,15 @@ public class WonGameMenu : MonoBehaviour {
             || (Input.GetAxisRaw(GameState.cameraVAxis) * 10 >= 0.8) || (Input.GetAxisRaw(GameState.cameraVAxis) * 10 <= -0.8)
             || (Input.GetAxisRaw(GameState.cameraVKey) * 10 >= 0.8) || (Input.GetAxisRaw(GameState.cameraVKey) * 10 <= -0.8))
             {
-                if (buttonSelector.transform.localPosition.y == 0 && !wasUp)
+                if (buttonSelector.transform.localPosition.y > selectorBottom + 2 && !wasUp)
                 {
                     buttonSelector.transform.localPosition = new Vector3(buttonSelector.transform.localPosition.x,
-                        -selectorMoveDistance, buttonSelector.transform.localPosition.z);
+                        buttonSelector.transform.localPosition.y - selectorMoveDistance, buttonSelector.transform.localPosition.z);
                 }
-                else if (buttonSelector.transform.localPosition.y == -selectorMoveDistance && !wasUp)
+                else if (buttonSelector.transform.localPosition.y < selectorStart - 2 && !wasUp)
                 {
                     buttonSelector.transform.localPosition = new Vector3(buttonSelector.transform.localPosition.x,
-                        0.0f, buttonSelector.transform.localPosition.z);
+                        buttonSelector.transform.localPosition.y + selectorMoveDistance, buttonSelector.transform.localPosition.z);
                 }
                 wasUp = true;
             }
@@ -56,7 +59,7 @@ public class WonGameMenu : MonoBehaviour {
             if ((Input.GetKeyDown(GameState.buttonA) || Input.GetKeyDown(GameState.returnKey)))
             {
                 // Check height of selector
-                if (buttonSelector.transform.localPosition.y == 0)
+                if (buttonSelector.transform.localPosition.y == selectorStart)
                 {
                     RetryGame();
                 }
@@ -70,18 +73,18 @@ public class WonGameMenu : MonoBehaviour {
 
     void RetryGame()
     {
-        reloadLevelText = wonGameMenu.GetComponent<Transform>().GetChild(0).gameObject;
-        reloadLevelText.SetActive(true);
+        LoadingLevel = GetComponent<Transform>().GetChild(7).gameObject;
+        LoadingLevel.SetActive(true);
         GameState.ResetGameState();
-        SceneManager.LoadScene("destructible_crate_prototype");
+        SceneManager.LoadScene(GameState.GetCurrentLevel());
     }
 
     void MainMenu()
     {
-        mainMenuText = wonGameMenu.GetComponent<Transform>().GetChild(1).gameObject;
-        mainMenuText.SetActive(true);
+        LoadingMainMenu = GetComponent<Transform>().GetChild(6).gameObject;
+        LoadingMainMenu.SetActive(true);
         GameState.ResetGameState();
-        SceneManager.LoadScene("Main Menu");
+        SceneManager.LoadScene(GameState.mainMenu);
     }
 
 }

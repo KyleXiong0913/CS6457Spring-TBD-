@@ -13,8 +13,7 @@ public class HumanoidFollow : MonoBehaviour {
     public GameObject player;
     private float catchDistance     = 0.5f;
     private bool  waitingAtStart    = true;
-    private int   timeSpentWaiting  = 0;
-    public  int   timeToWaitAtStart = 200;
+    private float   timeRemaining = 5.0f;
 
 
 	// Use this for initialization
@@ -27,22 +26,25 @@ public class HumanoidFollow : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-        if (GameState.GamePaused())
+        if (GameState.GamePaused() || GameState.GameWon())
         {
             animator.SetBool("move", false);
             agent.destination = transform.position;
         }
-        else
-        {
+        else if (!GameState.GameLost())
+        {  
             if (waitingAtStart)
             {
-                timeSpentWaiting++;
-                if (timeSpentWaiting >= timeToWaitAtStart)
+                timeRemaining -= Time.deltaTime;
+                if (timeRemaining <= 0.0f)
                 {
                     animator.SetBool("move", true);
                     agent.destination = player.transform.position;
                     waitingAtStart = false;
                 }
+            } else
+            {
+                animator.SetBool("move", true);
             }
 
             if ((transform.position - player.transform.position).magnitude <= catchDistance)

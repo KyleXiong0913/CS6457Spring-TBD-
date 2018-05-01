@@ -18,8 +18,6 @@ public class Blocks_Count : MonoBehaviour
     void Update()
     {
         text = GetComponent<Text>();
-        //Now the below step is useless, but will continue to implement in the future.
-        //text.text = "Blocks Destroyed: " + GameState.CountDestroyedBlocks();
-        text.text = "Blocks Destroyed:" + GameState.blocksDestroyed;
+        text.text = "Blocks Destroyed:  " + GameState.blocksDestroyed;
     }
 }

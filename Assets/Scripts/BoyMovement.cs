@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-// TODO testing
-//using UnityEditor.Animations;
 
 public class BoyMovement : MonoBehaviour {
 
@@ -11,14 +9,12 @@ public class BoyMovement : MonoBehaviour {
 
     public GameObject bat;
     public GameObject hitForce; // collider that adds extra force after swing
-    public GameObject smashForce; // collider that adds extra force after smash
     public FixedJoint handBatJoint; // fixed joint from right hand to bat
     public Rigidbody batRigidbody;
 
-    //private static GameState gameState = new GameState();
-
     private Animator animator; // player animator controller
 
+    // Baseball bat orientation variables
     private Vector3 direction; // used for player rotation
     private Vector3 batIdleTrans = new Vector3(0.104f, -0.062f, -0.148f); // local position of bat while idle
     private Vector3 batIdleRot = new Vector3(-78.928f, 211.185f, -31.269f); // local rotation of bat while idle
@@ -28,10 +24,9 @@ public class BoyMovement : MonoBehaviour {
     // Trigger cooldowns for actions
     private float lastSwingTime = 0.0f;
     private float swingCooldown = 1f;
-    private float lastSmashTime = 0.0f;
-    private float smashCooldown = 1f;
     private float cameraRotation = 0f;
 
+    // Animator Controller Floats
     private float vertical_speed; // sent to animator controller - forward motion
     private float horizontal_speed; // sent to animator controller - turning motion
     private float rotateDegreesPerSecond = 120.0f;
@@ -79,11 +74,6 @@ public class BoyMovement : MonoBehaviour {
                 bat.transform.localRotation = Quaternion.RotateTowards(bat.transform.localRotation, rotation,
                     1000 * Time.deltaTime); // This particular operation accounts for the animation transition
                 handBatJoint.connectedBody = batRigidbody;
-            } else if ((Input.GetKeyDown(GameState.buttonY) || Input.GetKeyDown(GameState.smashKey)) && !animator.GetCurrentAnimatorStateInfo(1).IsName("Smash")
-                && !animator.GetCurrentAnimatorStateInfo(1).IsName("Swing") && ((Time.time - lastSmashTime) > smashCooldown))
-            {
-                animator.SetTrigger("smash");
-                lastSmashTime = Time.time;
             } else if ((Input.GetKeyDown(GameState.buttonA) || Input.GetKeyDown(GameState.jumpKey)) && !animator.GetCurrentAnimatorStateInfo(1).IsName("Jump"))
             {
                 animator.SetTrigger("jump");
@@ -94,17 +84,12 @@ public class BoyMovement : MonoBehaviour {
                 // Turns the character based on right stick. Doesn't affect animations,
                 // but does affect the camera since it follows the player.
                 animator.SetBool("turningInPlace", false);
-                //direction = new Vector3(horizontal_speed, 0, 0);
-                //direction = transform.TransformDirection(direction);
-                //transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction),
-                //rotateDegreesPerSecond * Time.deltaTime);
             }
-            else if ((horizontal_speed >= 0.1 || horizontal_speed <= -0.1) && (vertical_speed <= 0.1 || vertical_speed >= -0.1))
+            else if ((horizontal_speed >= 0.1 || horizontal_speed <= -0.1) && (vertical_speed <= 0.1 && vertical_speed >= -0.1))
             {
                 // Turns the character in place if there is no forward movement.
                 animator.SetBool("turningInPlace", true);
                 animator.SetFloat("h_speed", horizontal_speed);
-                //Debug.Log(horizontal_speed); // commenting this out so i can see other debug output
             }
             else
             {
@@ -151,14 +136,6 @@ public class BoyMovement : MonoBehaviour {
                 bat.transform.localRotation = rotation;
                 handBatJoint.connectedBody = batRigidbody;
                 hitForce.GetComponent<CapsuleCollider>().enabled = false;
-            }
-
-            if (animator.GetCurrentAnimatorStateInfo(1).IsName("Smash"))
-            {
-                smashForce.GetComponent<CapsuleCollider>().enabled = true;
-            } else
-            {
-                smashForce.GetComponent<CapsuleCollider>().enabled = false;
             }
         }
     }

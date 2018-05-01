@@ -12,12 +12,11 @@ public class Cookies_Count : MonoBehaviour
     void Start()
     {
         text = GetComponent<Text>();
-        Count = 0;
     }
 
     void Update()
     {
         text = GetComponent<Text>();
-        text.text = "Cookies Left: " + (GameObject.Find("Collectibles").gameObject.GetComponent<Transform>().childCount - GameState.CollectiblesFound());
+        text.text = "Cookies Left:  " + GameState.CollectiblesLeft();
     }
 }
