@@ -11,6 +11,7 @@ public class BoyMovement : MonoBehaviour {
 
     public GameObject bat;
     public GameObject hitForce; // collider that adds extra force after swing
+    public GameObject smashForce; // collider that adds extra force after smash
     public FixedJoint handBatJoint; // fixed joint from right hand to bat
     public Rigidbody batRigidbody;
 
@@ -23,6 +24,13 @@ public class BoyMovement : MonoBehaviour {
     private Vector3 batIdleRot = new Vector3(-78.928f, 211.185f, -31.269f); // local rotation of bat while idle
     private Vector3 batSwingTrans = new Vector3(0.0888f, -0.0301f, -0.1503f); // local position of bat while swinging
     private Vector3 batSwingRot = new Vector3(-58.624f, 351.56f, -173.957f); // local rotation of bat while swinging
+
+    // Trigger cooldowns for actions
+    private float lastSwingTime = 0.0f;
+    private float swingCooldown = 1f;
+    private float lastSmashTime = 0.0f;
+    private float smashCooldown = 1f;
+    private float cameraRotation = 0f;
 
     private float vertical_speed; // sent to animator controller - forward motion
     private float horizontal_speed; // sent to animator controller - turning motion
@@ -46,22 +54,23 @@ public class BoyMovement : MonoBehaviour {
             animator.SetBool("turningInPlace", false);
         } else
         {
+            animator.SetBool("isJumping", animator.GetCurrentAnimatorStateInfo(0).IsName("JumpForward"));
             vertical_speed = Input.GetAxisRaw(GameState.verticalAxis);
             if (vertical_speed <= 0.05 && vertical_speed >= -0.05) {
                 vertical_speed = Input.GetAxisRaw(GameState.verticalKey);
             }
-            horizontal_speed = Input.GetAxisRaw(GameState.cameraHAxis); // corresponds to right joystick X-axis on controller
+            horizontal_speed = Input.GetAxisRaw(GameState.horizontalAxis); // corresponds to right joystick X-axis on controller
             if (horizontal_speed <= 0.05 && horizontal_speed >= -0.05)
             {
-                horizontal_speed = Input.GetAxisRaw(GameState.cameraHKey);
+                horizontal_speed = Input.GetAxisRaw(GameState.horizontalKey);
             }
 
             animator.SetFloat("v_speed", vertical_speed); // send forward movement to AC
+            animator.SetFloat("h_speed", horizontal_speed); // send turning movement to AC
 
-            if (Input.GetKeyDown("joystick 1 button 1")) // if A button pressed, perform a swing
-            {
+            if ((Input.GetKeyDown(GameState.buttonB) || Input.GetKeyDown(GameState.swingKey)) && ((Time.time - lastSwingTime) > swingCooldown)) { // if A button pressed, perform a swing
                 animator.SetTrigger("swing");
-
+                lastSwingTime = Time.time;
                 // The bat needs a different pos & rot relative to the parent hand when swinging, so below
                 // we disconnet the fixed joint in order to change these, and then reattach the bat to the hand.
                 handBatJoint.connectedBody = null;
@@ -70,29 +79,31 @@ public class BoyMovement : MonoBehaviour {
                 bat.transform.localRotation = Quaternion.RotateTowards(bat.transform.localRotation, rotation,
                     1000 * Time.deltaTime); // This particular operation accounts for the animation transition
                 handBatJoint.connectedBody = batRigidbody;
-            } else if (Input.GetKeyDown("joystick 1 button 3") && !animator.GetCurrentAnimatorStateInfo(1).IsName("Swing"))
+            } else if ((Input.GetKeyDown(GameState.buttonY) || Input.GetKeyDown(GameState.smashKey)) && !animator.GetCurrentAnimatorStateInfo(1).IsName("Smash")
+                && !animator.GetCurrentAnimatorStateInfo(1).IsName("Swing") && ((Time.time - lastSmashTime) > smashCooldown))
             {
                 animator.SetTrigger("smash");
-            } else if (Input.GetKeyDown("joystick 1 button 0") && !animator.GetCurrentAnimatorStateInfo(1).IsName("Smash"))
+                lastSmashTime = Time.time;
+            } else if ((Input.GetKeyDown(GameState.buttonA) || Input.GetKeyDown(GameState.jumpKey)) && !animator.GetCurrentAnimatorStateInfo(1).IsName("Jump"))
             {
                 animator.SetTrigger("jump");
             }
 
-            if ((horizontal_speed >= 0.05 || horizontal_speed <= -0.05) && (vertical_speed >= 0.1 || vertical_speed <= -0.1))
+            if ((horizontal_speed >= 0.1 || horizontal_speed <= -0.1) && (vertical_speed >= 0.1 || vertical_speed <= -0.1))
             {
                 // Turns the character based on right stick. Doesn't affect animations,
                 // but does affect the camera since it follows the player.
                 animator.SetBool("turningInPlace", false);
-                direction = new Vector3(horizontal_speed, 0, 0);
-                direction = transform.TransformDirection(direction);
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction),
-                    rotateDegreesPerSecond * Time.deltaTime);
+                //direction = new Vector3(horizontal_speed, 0, 0);
+                //direction = transform.TransformDirection(direction);
+                //transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction),
+                //rotateDegreesPerSecond * Time.deltaTime);
             }
-            else if ((horizontal_speed >= 0.05 || horizontal_speed <= -0.05) && (vertical_speed <= 0.1 || vertical_speed >= -0.1))
+            else if ((horizontal_speed >= 0.1 || horizontal_speed <= -0.1) && (vertical_speed <= 0.1 || vertical_speed >= -0.1))
             {
                 // Turns the character in place if there is no forward movement.
                 animator.SetBool("turningInPlace", true);
-                animator.SetFloat("h_speed", horizontal_speed * 10);
+                animator.SetFloat("h_speed", horizontal_speed);
                 //Debug.Log(horizontal_speed); // commenting this out so i can see other debug output
             }
             else
@@ -100,6 +111,25 @@ public class BoyMovement : MonoBehaviour {
                 animator.SetBool("turningInPlace", false);
             }
 
+            // Rotate based on camera rotation
+            cameraRotation = Input.GetAxisRaw(GameState.cameraHAxis);
+            if (cameraRotation <= 0.03 && cameraRotation >= -0.03)
+            {
+                cameraRotation = Input.GetAxisRaw(GameState.cameraHKey) / 3.0f;
+            }
+            if ((cameraRotation >= 0.05 || cameraRotation <= -0.05) && (vertical_speed >= 0.1 || vertical_speed <= -0.1))
+            {
+                direction = new Vector3(cameraRotation, 0, 0);
+                direction = transform.TransformDirection(direction);
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(direction),
+                    rotateDegreesPerSecond * Time.deltaTime);
+            } else if ((cameraRotation >= 0.01 || cameraRotation <= -0.01) && (vertical_speed <= 0.1 && vertical_speed >= -0.1))
+            {
+                animator.SetBool("turningInPlace", true);
+                animator.SetFloat("h_speed", cameraRotation * 10);
+            }
+
+            // Swing bat
             if (animator.GetCurrentAnimatorStateInfo(1).IsName("Swing"))
             {
                 // The bat needs a different pos & rot relative to the parent hand when swinging, so below
@@ -121,6 +151,14 @@ public class BoyMovement : MonoBehaviour {
                 bat.transform.localRotation = rotation;
                 handBatJoint.connectedBody = batRigidbody;
                 hitForce.GetComponent<CapsuleCollider>().enabled = false;
+            }
+
+            if (animator.GetCurrentAnimatorStateInfo(1).IsName("Smash"))
+            {
+                smashForce.GetComponent<CapsuleCollider>().enabled = true;
+            } else
+            {
+                smashForce.GetComponent<CapsuleCollider>().enabled = false;
             }
         }
     }
