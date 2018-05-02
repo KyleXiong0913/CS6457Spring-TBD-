@@ -5,6 +5,9 @@ using UnityEngine;
 public class CreateHitForce : MonoBehaviour {
 
     public float scaleFactor = 300.0f; // Changes how strong the applied force is to hit the destructible object
+    private float lastPlayedTime = 0.0f;
+    private float audioCooldown = 1.0f;
+    public AudioSource hitSound;
     //public AudioSource audios;
     //public AudioClip clip;
 
@@ -18,6 +21,11 @@ public class CreateHitForce : MonoBehaviour {
     {
         if (collider.gameObject.layer != 8 && !collider.gameObject.isStatic) // ensures the collider cannot add force to the player
         {
+            if ((Time.time - audioCooldown) >= lastPlayedTime)
+            {
+                hitSound.Play();
+                lastPlayedTime = Time.time;
+            }
             Rigidbody body = collider.gameObject.GetComponent<Rigidbody>();
             Vector3 direction = collider.gameObject.transform.position - transform.position;
             body.AddForceAtPosition(direction * scaleFactor, transform.position);

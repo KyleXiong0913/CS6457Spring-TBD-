@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class CollectibleCookie : MonoBehaviour {
 
-	// Use this for initialization
+    public AudioSource source;
+    
+    // Use this for initialization
 	void Start () {
 		
 	}
@@ -19,8 +21,17 @@ public class CollectibleCookie : MonoBehaviour {
         GameObject collidingObject = collider.gameObject;
         if (collidingObject.layer == 8)
         {
-            GameState.FoundCollectible();
-            Destroy(this.gameObject);
+            //Debug.Log("FOUND EET");
+            int cookiesLeft = GameState.CountCollectibles() - 1;
+            source.Play();
+            if (cookiesLeft == 0)
+            {
+                GameState.SetWon();
+            }
+
+            Destroy(transform.parent.gameObject);
+            
+            //Destroy(this.gameObject);
         }
     }
 }

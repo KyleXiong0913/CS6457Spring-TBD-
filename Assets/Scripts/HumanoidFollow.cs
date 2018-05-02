@@ -26,7 +26,7 @@ public class HumanoidFollow : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-        if (GameState.GamePaused() || GameState.GameWon())
+        if (GameState.GamePaused() || GameState.GameWon() || GameState.GameLost())
         {
             animator.SetBool("move", false);
             agent.destination = transform.position;
@@ -51,8 +51,6 @@ public class HumanoidFollow : MonoBehaviour {
             {
                 animator.SetBool("move", false);
                 agent.destination = transform.position;
-                // TODO testing
-                Debug.Log("GOT HERE");
                 GameState.LoseGame();
             }
             else if (animator.GetBool("move"))

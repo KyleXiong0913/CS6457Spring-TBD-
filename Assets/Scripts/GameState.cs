@@ -39,28 +39,37 @@ public class GameState {
 
     private static bool pause = false;
     private static bool foundAllCollectibles = false;
-    private static int numCollectibles; //= CountCollectibles();
+
     //This is the variable that is used to store the foundCollectibles variable as primarily int type.
     private static int foundCollectibles = 0;
     private static bool lostGame = false;
     public static int blocksDestroyed = 0;
 
-    private static string currentLevel = speedLevel;
+    // Level Switching Logic
+    private static string[] levels = { "Start Level", "Speed Level", "Maze Level" }; //Start Level, 
+    private static int levelIndex = 0;
+    private static string currentLevel = levels[levelIndex];
 
-    public void Start()
+    public static void ResetLevelIndex()
     {
-        numCollectibles = GameObject.Find("Collectibles").gameObject.GetComponent<Transform>().childCount;
-
+        levelIndex = 0;
     }
 
-    public static void SetCurrentLevel(string levelName)
+    public static bool NextLevel()
     {
-        currentLevel = levelName;
+        levelIndex++;
+        if (levelIndex >= levels.Length)
+        {
+            levelIndex = levels.Length;
+            return true;
+        }
+        currentLevel = levels[levelIndex];
+        return false;
     }
 
     public static string GetFirstLevel()
     {
-        return speedLevel;
+        return levels[0];
     }
 
     public static string GetCurrentLevel()
@@ -81,11 +90,17 @@ public class GameState {
 
     public static void FoundCollectible()
     {
-        foundCollectibles = foundCollectibles + 1;
-        if (foundCollectibles >= numCollectibles)
+        int cookiesLeft = CountCollectibles();
+        Debug.Log(cookiesLeft);
+        if (cookiesLeft <= 0)
         {
             foundAllCollectibles = true;
         }
+    }
+
+    public static void SetWon()
+    {
+        foundAllCollectibles = true;
     }
 
     public static bool GameWon()
@@ -95,16 +110,8 @@ public class GameState {
 
     public static int CollectiblesLeft()
     {
-        if (numCollectibles <= foundCollectibles)
-        {
-            return 0;
-        }
-        return numCollectibles - foundCollectibles;
-    }
-
-    public static int NumCollectibles()
-    {
-        return numCollectibles;
+        int cookiesLeft = CountCollectibles();
+        return cookiesLeft;
     }
 
     public static int CollectiblesFound()
@@ -125,6 +132,11 @@ public class GameState {
     public static void LoseGame()
     {
         lostGame = true;
+    }
+
+    public static int CountCollectibles()
+    {
+        return GameObject.Find("Collectibles").gameObject.GetComponent<Transform>().childCount;
     }
 
     //This is the method that is used to calculate the number of blocks been destroyed.

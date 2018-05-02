@@ -32,36 +32,16 @@ public class CameraTilt : MonoBehaviour {
             // add height & rotate x direction
             if (tiltValue >= 0.05 || tiltValue <= -0.05)
             {
-                //angle = angle + ((tiltValue * 10) * scaleValue * Time.deltaTime);
-                //Transform playerTransform = player.GetComponent<Transform>();
-               // Vector3 playerPos = playerTransform.position;
-                //Vector3 playerForward = playerTransform.forward;
-                //Vector3 newPos = playerPos - (playerTransform.forward * followDistance);
                 height -= tiltValue * tiltSpeed * Time.deltaTime;
-                //newPos.y += height;
-
-                //Vector3 newPos = playerPos + new Vector3(0, Mathf.Sin(((angle * Mathf.PI) / 180)) * followDistance, - Mathf.Cos((angle * Mathf.PI) / 180) * followDistance);
-
-                //GetComponent<Transform>().position = newPos;
-
-                //Quaternion newRotation = Quaternion.LookRotation(playerPos - newPos + heightOffset);
-                //transform.rotation = newRotation;
             }
 
             float maxFollowDistance = followDistance;
 
-            //angle = angle + ((tiltValue * 10) * scaleValue * Time.deltaTime);
             Transform playerTransform = player.GetComponent<Transform>();
             Vector3 playerPos = playerTransform.position;
             Vector3 playerForward = playerTransform.forward;
             Vector3 firstPos = playerPos - (playerTransform.forward * followDistance);
-            //height += Input.GetAxisRaw(GameState.cameraVAxis) * 5 * Time.deltaTime;
             firstPos.y += height;
-
-
-            //Vector3 newPos = playerPos + new Vector3(0, Mathf.Sin(((angle * Mathf.PI) / 180)) * followDistance, - Mathf.Cos((angle * Mathf.PI) / 180) * followDistance);
-
-            //GetComponent<Transform>().position = firstPos;
 
             Quaternion newRotation = Quaternion.LookRotation(playerPos - firstPos + heightOffset);
             transform.rotation = newRotation;
@@ -72,13 +52,6 @@ public class CameraTilt : MonoBehaviour {
 
             while (Physics.Raycast(newPos, transform.forward, out hit, maxFollowDistance, layerMask) && maxFollowDistance >= 0.1f)
             {
-                //if (!hit.collider.CompareTag("Player") && maxFollowDistance > 0.0f)
-                //{
-                    
-                //} else
-                //{
-                 //   break;
-                //}
                 maxFollowDistance -= 0.1f;
                 newPos = playerPos - (playerTransform.forward * (maxFollowDistance));
                 newPos.y += height;
@@ -90,8 +63,6 @@ public class CameraTilt : MonoBehaviour {
 
             newRotation = Quaternion.LookRotation(playerPos - newPos + heightOffset);
             transform.rotation = newRotation;
-
-
         }
 	}
 }

@@ -61,7 +61,7 @@ public class WonGameMenu : MonoBehaviour {
                 // Check height of selector
                 if (buttonSelector.transform.localPosition.y == selectorStart)
                 {
-                    RetryGame();
+                    ContinueGame();
                 }
                 else
                 {
@@ -71,11 +71,18 @@ public class WonGameMenu : MonoBehaviour {
         }
     }
 
-    void RetryGame()
+    void ContinueGame()
     {
         LoadingLevel = GetComponent<Transform>().GetChild(7).gameObject;
         LoadingLevel.SetActive(true);
         GameState.ResetGameState();
+        if (GameState.GetCurrentLevel() == "Maze Level")
+        {
+            GameState.ResetLevelIndex();
+        } else
+        {
+            GameState.NextLevel();
+        }
         SceneManager.LoadScene(GameState.GetCurrentLevel());
     }
 

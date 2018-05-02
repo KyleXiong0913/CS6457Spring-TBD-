@@ -59,9 +59,7 @@ public class MainMenu : MonoBehaviour {
 
     void StartGame()
     {
-        //reloadLevelText = wonGameMenu.GetComponent<Transform>().GetChild(0).gameObject;
-        //reloadLevelText.SetActive(true);
-        //GameState.ResetGameState();
+        GameState.ResetLevelIndex();
         SceneManager.LoadScene(GameState.GetFirstLevel());
     }
 

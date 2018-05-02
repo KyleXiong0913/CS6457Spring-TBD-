@@ -58,7 +58,7 @@ public class LostGameMenu : MonoBehaviour {
                 // Check height of selector
                 if (buttonSelector.transform.localPosition.y == selectorStart)
                 {
-                    RetryGame();
+                    RetryLevel();
                 }
                 else
                 {
@@ -68,12 +68,12 @@ public class LostGameMenu : MonoBehaviour {
         }
     }
 
-    void RetryGame()
+    void RetryLevel()
     {
         LoadingLevel = GetComponent<Transform>().GetChild(7).gameObject;
         LoadingLevel.SetActive(true);
         GameState.ResetGameState();
-        SceneManager.LoadScene(GameState.GetCurrentLevel());
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     void MainMenu()
