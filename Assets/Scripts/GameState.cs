@@ -53,6 +53,7 @@ public class GameState {
     public static void ResetLevelIndex()
     {
         levelIndex = 0;
+        currentLevel = levels[levelIndex];
     }
 
     public static bool NextLevel()
@@ -74,7 +75,7 @@ public class GameState {
 
     public static string GetCurrentLevel()
     {
-        return currentLevel;
+        return levels[levelIndex];
     }
 
     public static void PauseGame()
