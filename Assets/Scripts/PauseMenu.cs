@@ -83,7 +83,7 @@ public class PauseMenu : MonoBehaviour {
 
     void RetryGame()
     {
-        LoadingLevel = GetComponent<Transform>().GetChild(7).gameObject;
+        LoadingLevel = GetComponent<Transform>().GetChild(6).gameObject;
         LoadingLevel.SetActive(true);
         GameState.ResetGameState();
         SceneManager.LoadScene(GameState.GetCurrentLevel());
@@ -91,7 +91,7 @@ public class PauseMenu : MonoBehaviour {
 
     void MainMenu()
     {
-        LoadingMainMenu = GetComponent<Transform>().GetChild(6).gameObject;
+        LoadingMainMenu = GetComponent<Transform>().GetChild(5).gameObject;
         LoadingMainMenu.SetActive(true);
         GameState.ResetGameState();
         SceneManager.LoadScene(GameState.mainMenu);

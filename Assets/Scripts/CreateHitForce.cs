@@ -28,7 +28,10 @@ public class CreateHitForce : MonoBehaviour {
             }
             Rigidbody body = collider.gameObject.GetComponent<Rigidbody>();
             Vector3 direction = collider.gameObject.transform.position - transform.position;
-            body.AddForceAtPosition(direction * scaleFactor, transform.position);
+            if (body)
+            {
+                body.AddForceAtPosition(direction * scaleFactor, transform.position);
+            }
             //Play the sound effect of the hit performance.
             //audios.Play();
         }   

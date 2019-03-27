@@ -73,7 +73,7 @@ public class WonGameMenu : MonoBehaviour {
 
     void ContinueGame()
     {
-        LoadingLevel = GetComponent<Transform>().GetChild(7).gameObject;
+        LoadingLevel = GetComponent<Transform>().GetChild(6).gameObject;
         LoadingLevel.SetActive(true);
         GameState.ResetGameState();
         if (GameState.GetCurrentLevel() == "Maze Level")
@@ -88,7 +88,7 @@ public class WonGameMenu : MonoBehaviour {
 
     void MainMenu()
     {
-        LoadingMainMenu = GetComponent<Transform>().GetChild(6).gameObject;
+        LoadingMainMenu = GetComponent<Transform>().GetChild(5).gameObject;
         LoadingMainMenu.SetActive(true);
         GameState.ResetGameState();
         SceneManager.LoadScene(GameState.mainMenu);

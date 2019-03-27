@@ -70,7 +70,7 @@ public class LostGameMenu : MonoBehaviour {
 
     void RetryLevel()
     {
-        LoadingLevel = GetComponent<Transform>().GetChild(7).gameObject;
+        LoadingLevel = GetComponent<Transform>().GetChild(6).gameObject;
         LoadingLevel.SetActive(true);
         GameState.ResetGameState();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -78,7 +78,7 @@ public class LostGameMenu : MonoBehaviour {
 
     void MainMenu()
     {
-        LoadingMainMenu = GetComponent<Transform>().GetChild(6).gameObject;
+        LoadingMainMenu = GetComponent<Transform>().GetChild(5).gameObject;
         LoadingMainMenu.SetActive(true);
         GameState.ResetGameState();
         SceneManager.LoadScene(GameState.mainMenu);
